@@ -1,46 +1,38 @@
 {
-    "postId": "0503f7ef-48b4-4eeb-aefb-f8d6f0fa01d8",
-    "metadata": {
-      "title": "Title",
+  "postId": "f807cbd0-daca-4362-a7b2-4e9b9837840b",
+  "metadata": {
+      "title": "QuickConfig: An Alternative to ArgParse and Hydra for Machine Learning Projects",
       "description": "",
-      "createdTime": "2023-10-30T11:33:31.055034",
-      "modifiedTime": "2023-10-30T11:33:31.055034",
-      "ogImage": "http://localhost:5252/api/uploads/image-485b37ea-1270-44c4-b992-0005744c7517.png",
-      "ogImageCaption": "Head Image Caption",
-      "ogImageAlt": "Head Image Caption"
-    },
-    "content": [
+      "createdTime": "2023-10-30T16:06:52.555771",
+      "modifiedTime": "2023-10-30T16:06:52.555771",
+      "ogImage": "https://miro.medium.com/v2/resize:fit:700/1*51fBveR5dnD0iIJEOHGbnw.png",
+      "ogImageCaption": "An example of a QuickConfig help message.",
+      "ogImageAlt": "An example of a QuickConfig help message."
+  },
+  "content": [
       {
-        "sectionId": "5288db70-e98d-45f5-b7f3-e1511b300e8b",
-        "type": "default",
-        "header": "Section Header 1",
-        "text": "Some paragraph text with **bolded text** and _italicized text_.\n\nAnd some text with a [hyperlink](https://your-link-here.com).\n\nHere is a list:\n- Item 1\n- Item 2\n- Item 3\n",
-        "summary": "",
-        "lastEdited": "2023-10-30T11:33:31.055034"
+          "sectionId": "83708d33-9585-477e-bd41-0bcdf113ebd6",
+          "type": "default",
+          "header": "Introduction",
+          "text": "```\npip install pyquickconfig\n```\n\nQuickConfig Repo: https://github.com/austinibele/quickconfig\n\nManaging configurations is fundamental in machine learning, where numerous parameters need to be tuned and controlled. I discovered this as a Senior Machine Learning Engineer at a Austin, TX consultancy, and this has stayed true throughout my experience founding My-Visa-USA, an AI-first start-up that aims to lower the financial barriers to U.S. Visa and Immigration. It’s also stayed true through various ML software projects we’ve completed at Avance.ai.\n\nTwo popular libraries for handling these configurations are ArgParse and Hydra. As we embarked on our quest to find the most suitable config management library at our company, we had a clear set of criteria in mind. We sought a library that would fulfill the following eight requirements:\n\n- Arguments and their defaults must be first defined in the code\n- The flexibility for default arguments to be overridden via file-based configurations (.json) or directly in the command-line.\n- Type validation.\n- Value validation.\n- Immutability\n- Specific help messages for each argument.\n- An exact copy of the configuration used for the run is automatically saved to a save directory specific for that run.\n- The save directory must be determined by the Config library and set as an attribute of the Config object, so that we can easily access the save directory to save model weights, validation metrics, and so forth in a single centralized location (along with the exact copy of the config, which is saved when the config is built).\n\nUnfortunately, neither ArgParse nor Hydra seemed to fully satisfy these requirements. I was also concerned that Hydra’s complexity might pose a barrier to its adoption. Thus we set off to create our own config library. One library that came out of that effort was QuickConfig, a library I personally designed and have used with success.\n",
+          "summary": "",
+          "lastEdited": "2023-10-30T16:06:52.555771"
       },
       {
-        "sectionId": "64f5e89b-12a8-458c-992b-27ac0738045b",
-        "type": "default",
-        "header": "Section Header 2",
-        "text": "What about if we have a list inside of a list?\n- Item 1\n- Item 2\n\nLooks like we can't do that...\n\nThis is code:\n```\nbin/build.sh &&\npython3.9 -m src.app\n```\n",
-        "summary": "",
-        "lastEdited": "2023-10-30T11:33:31.055034"
+          "sectionId": "88f8477d-f178-4a42-a1fc-4faf4ab98c46",
+          "type": "default",
+          "header": "Comparison with ArgParse and Hydra",
+          "text": "Here are some more details on QuickConfig, and how it compares to ArgParse and Hydra…\n\nLike ArgParse, QuickConfig allows users to define arguments and their default values in code, but like Hydra, it extends this functionality by permitting these defaults to be overridden by file-based configurations and/or at the command-line (both options which are not available in ArgParse). An added layer of safety is achieved by QuickConfig’s insistence that users define all arguments in the code before an argument can be supplied in a file or the command line.\n\nBelow: An example of overriding defaults with values in config.json, and overriding the “lr” argument of the training sub-config through the command-line.\n\n```\npython -m src.main config=config.json training.lr=1e-4\n```\n\nBelow: Defining subconfigs, arguments, and their defaults.\n\n```\nfrom quickconfig.main_base import MainBase\nfrom quickconfig.base_config import BaseConfig\n\nclass MainConfig(MainBase):    \n  def __init__(self):        \n    super().__init__(prog=\"train.sh\", description=\"Train a model\")        \n    self.model = ModelConfig        \n    self.training = TrainingConfig\n\nclass ModelConfig(BaseConfig):    \n  def __init__(self):        \n    super().__init__()        \n    self.add_argument(            \n      name=\"model_type\",            \n      type=str,            \n      default=\"retinanet\",            \n      help=\"The type of model to use\",            \n      validation=lambda x: x in [\"retinanet\", \"patch\"],       \n      )\n\nclass TrainingConfig(BaseConfig):    \n  def __init__(self):        \n    super().__init__()        \n    self.add_argument(             \n      name=\"use_mlflow_logger\",            \n      type=bool,            \n      default=False,            \n      help=\"Should we log with mlflow?\",            \n      validation=None,        \n      )        \n    self.add_argument(            \n      name=\"lr\",            \n      type=float,            \n      default=1e-3,            \n      help=\"This is a mock integer arg\",            \n      validation=lambda x: x >= 1e-9 and x <= 1e-2,        \n      )\n```\n\nBelow: Using QuickConfig with your module.\n\n```\nfrom src.training.main_config import MainConfig\n\nclass MySession:\n...\n...\n\nif __name__ == \"__main__\":    \n  config = MainConfig()    \n  config.build()    \n\n  session = MySession(config)    \n  session.run()\n```\n\nQuickConfig sets itself apart from Hydra with its easy to use type and value validation. Utilizing lambda functions, QuickConfig performs value validation, offering a level of control and verification that guards against runtime errors. Hydra, while being a powerful tool, does not offer a straightforward way to specify data type and validation without resorting to creating data-class configurations — a process that can be cumbersome in Hydra. QuickConfig makes type and value validation a breeze.\n\nBelow: Defining arguments and their defaults in code with QuickConfig.\n\n```\nself.add_argument(    \n    name=\"lr\",    \n    type=float,    \n    default=1e-3,    \n    help=\"This is a mock integer arg\",    \n    validation=lambda x: x >= 1e-9 and x <= 1e-2\n)\n```\n\nThe way QuickConfig organizes argument access makes it an appealing choice. Arguments are handled as attributes, allowing for a structured access like 'config.model_architecture.num_conv_layers'. In this case, model_architecture is a sub-config of the main config, and num_conv_layers is a argument of the model_architecture sub-config. This design ensures the code remains neat, readable, and easy to maintain. Adding to its reliability, QuickConfig makes configurations immutable once they are created, preventing accidental modifications later in the code. (Note that QuickConfig, like Hydra, only permits one level of nesting in the config. i.e. cub-configs cannot have their own sub-configs).\n\nWhile QuickConfig holds several advantages, Hydra is more featured. One great Hydra feature is the ability to execute multiple training runs with different argument values from a single command-line command. In Hydra, different training runs can be initiated by simply separating parameter values with a comma, like “lr=1e-5,1e-4”. This mechanism expedites the process of training with different hyperparameters, thereby boosting efficiency in experimentation and tuning. With that being said, that functionality is next on my list to implement (And if anyone is interested in implementing that or additional features, I welcome contributors).\n\nOn the other hand, another notable downside to Hydra is its lack of help messages for arguments. This absence can make it difficult for new users or those unfamiliar with the codebase to grasp the purpose, type, and validation of various arguments. On the contrary, QuickConfig offers the ability to set specific help messages for each and every argument. The help message can be displayed by passing “- — help” or “- — h” with the command-line.\n\n![An example of a QuickConfig help message.](https://miro.medium.com/v2/resize:fit:700/1*51fBveR5dnD0iIJEOHGbnw.png)\n<An example of a QuickConfig help message.\n\nHydra’s handling of configuration save directories also has its challenges. Unless a datetime is added to the save directory, the directory risks being overridden each time, potentially resulting in data loss. While using Hydra’s functionality to create unique save directories using datetime can circumvent this problem, naming folders wiht long datetime strings is not as intuitive as QuickConfig’s method of sequentially naming the folders for easy reference.\n\n![By default, QuickConfig creates a new folder in the “results” directory for each day. Each run on that day results in the creation of a folder (with an integer name). The folder named “N” corresponds to the Nth run of that day.](https://miro.medium.com/v2/resize:fit:187/1*2S28TQWswIXB047-86Jc4A.png)\n<By default, QuickConfig creates a new folder in the “results” directory for each day. Each run on that day results in the creation of a folder (with an integer name). The folder named “N” corresponds to the Nth run of that day.\n",
+          "summary": "",
+          "lastEdited": "2023-10-30T16:06:52.555771"
       },
       {
-        "sectionId": "3e37fe3e-bf45-4a88-b423-fc09bd9e5b4b",
-        "type": "faq",
-        "header": "Frequently Asked Questions",
-        "text": "<question>What is the first question</question>\n\n<answer>\nThis is the first line\n\nof the first answer\n</answer>   \n<question>\nWhat is the second question?\n</question>\n\n<answer>\nThe second answer contains a list. Here are its items:\n- Item 1\n- Item 2\n</answer>",
-        "summary": "",
-        "lastEdited": "2023-10-30T11:33:31.055034",
-        "questions": [
-          "What is the first question",
-          "What is the second question?"
-        ],
-        "answers": [
-          "This is the first line\n\nof the first answer",
-          "The second answer contains a list. Here are its items:\n- Item 1\n- Item 2"
-        ]
+          "sectionId": "32a32bd1-4dcc-45a1-be0c-3712d43d8291",
+          "type": "default",
+          "header": "Final Thoughts",
+          "text": "In conclusion, QuickConfig is a simple, robust and user-friendly alternative to ArgParse and Hydra. Its ability to override defaults on the fly from a file-based config or the command-line, coupled with its type and value validation, make QuickConfig not just extremely easy to use, but dependable as well. Its attribute-like argument access and immutable configurations help improve reliability and readability of your code. While it does miss out on some features, such as Hydra’s ability to initiate multiple training runs with different parameters specified from the command-line, QuickConfig is easier to use than Hydra, offers better help messages, better type and value validation, and saves experiments in more intuitively named directories.\n\nSo if you’re looking for an easy to use config library that has type and value validation, immutability, allows easy access of arguments in the code by making arguments attributes, automatically saves a copy of the configuration, and has the ability to configure specific help messages for each and every argument, look no further. Give QuickConfig a try and let me know what you think.\n\n```\npip install pyquickconfig\n```\n\nQuickConfig Repo: https://github.com/austinibele/quickconfig",
+          "summary": "",
+          "lastEdited": "2023-10-30T16:06:52.555771"
       }
-    ]
-  }
+  ]
+}
