@@ -1,0 +1,38 @@
+{
+  "name": "md-json-converter",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Coverts files between markdown, CleanJSON (editor.js), and a custom JSON schema that I use.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "rollup --config",
+    "test": "npm run build && node test/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/austinibele/md-json-converter.git"
+  },
+  "keywords": [
+    "react",
+    "block",
+    "editor",
+    "renderer",
+    "article"
+  ],
+  "author": "Austin Ibele <austin.ibele@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/austinibele/md-json-converter/issues"
+  },
+  "homepage": "https://github.com/austinibele/md-json-converter#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.2"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.22.15",
+    "@rollup/plugin-babel": "^6.0.4",
+    "rollup": "^4.2.0",
+    "uuid": "^9.0.1"
+  }
+}

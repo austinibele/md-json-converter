@@ -1,0 +1,46 @@
+{
+    "postId": "0503f7ef-48b4-4eeb-aefb-f8d6f0fa01d8",
+    "metadata": {
+      "title": "Title",
+      "description": "",
+      "createdTime": "2023-10-30T11:33:31.055034",
+      "modifiedTime": "2023-10-30T11:33:31.055034",
+      "ogImage": "http://localhost:5252/api/uploads/image-485b37ea-1270-44c4-b992-0005744c7517.png",
+      "ogImageCaption": "Head Image Caption",
+      "ogImageAlt": "Head Image Caption"
+    },
+    "content": [
+      {
+        "sectionId": "5288db70-e98d-45f5-b7f3-e1511b300e8b",
+        "type": "default",
+        "header": "Section Header 1",
+        "text": "Some paragraph text with **bolded text** and _italicized text_.\n\nAnd some text with a [hyperlink](https://your-link-here.com).\n\nHere is a list:\n- Item 1\n- Item 2\n- Item 3\n",
+        "summary": "",
+        "lastEdited": "2023-10-30T11:33:31.055034"
+      },
+      {
+        "sectionId": "64f5e89b-12a8-458c-992b-27ac0738045b",
+        "type": "default",
+        "header": "Section Header 2",
+        "text": "What about if we have a list inside of a list?\n- Item 1\n- Item 2\n\nLooks like we can't do that...\n\nThis is code:\n```\nbin/build.sh &&\npython3.9 -m src.app\n```\n",
+        "summary": "",
+        "lastEdited": "2023-10-30T11:33:31.055034"
+      },
+      {
+        "sectionId": "3e37fe3e-bf45-4a88-b423-fc09bd9e5b4b",
+        "type": "faq",
+        "header": "Frequently Asked Questions",
+        "text": "<question>What is the first question</question>\n\n<answer>\nThis is the first line\n\nof the first answer\n</answer>   \n<question>\nWhat is the second question?\n</question>\n\n<answer>\nThe second answer contains a list. Here are its items:\n- Item 1\n- Item 2\n</answer>",
+        "summary": "",
+        "lastEdited": "2023-10-30T11:33:31.055034",
+        "questions": [
+          "What is the first question",
+          "What is the second question?"
+        ],
+        "answers": [
+          "This is the first line\n\nof the first answer",
+          "The second answer contains a list. Here are its items:\n- Item 1\n- Item 2"
+        ]
+      }
+    ]
+  }
