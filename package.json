@@ -1,7 +1,7 @@
 {
   "name": "md-json-converter",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Coverts files between markdown, CleanJSON (editor.js), and a custom JSON schema that I use.",
   "main": "src/index.js",
   "scripts": {
