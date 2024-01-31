@@ -118,6 +118,20 @@ const parseNotFaq = (mdContent) => {
             i = codeBlockResult.newIndex - 1;  // Update the index to after the code block, -1 since the loop will increment
             continue;
         }
+        
+        // Check for listItem and **listBlock** before header, otherwise header could be appended before list items, which is out of order
+        const listItem = parseListItem(line);
+        if (listItem) {
+            listItems.push(convertMdtoHtml(listItem));
+            continue;
+        }
+        const listBlock = processListItems(listItems);
+
+        if (listBlock) {
+            blocks.push(listBlock);
+            listItems = [];
+        }
+
 
         if (block = parseHeader(line)) {
             blocks.push(block);
@@ -131,18 +145,6 @@ const parseNotFaq = (mdContent) => {
 
         if (line[0] === ">") {
             continue;
-        }
-
-        const listItem = parseListItem(line);
-        if (listItem) {
-            listItems.push(convertMdtoHtml(listItem));
-            continue;
-        }
-
-        const listBlock = processListItems(listItems);
-        if (listBlock) {
-            blocks.push(listBlock);
-            listItems = [];
         }
 
         if (block = parseParagraph(line)) {
