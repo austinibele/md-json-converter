@@ -21,7 +21,7 @@ const parseImage = (line) => {
 };
 
 const parseListItem = (line) => {
-    const listItemMatch = line.match(/-\s(.+)|\d\.\s(.+)/);
+    const listItemMatch = line.match(/-\s(.+)|\d\\s(.+)/);
     if (listItemMatch) {
         return listItemMatch[1] || listItemMatch[2];
     }
@@ -134,6 +134,9 @@ const parseNotFaq = (mdContent) => {
 
         const listItem = parseListItem(line);
         if (listItem) {
+            console.log(listItem);
+            console.log(line);
+            console.log('********')
             listItems.push(listItem);
             continue;
         }
