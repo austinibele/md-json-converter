@@ -49,9 +49,10 @@ const convertFromJSON = jsonData => {
         level: block.data.level
       });
     } else if (block.type === "image") {
+      let url = block.data.url ? block.data.url : block.data.file.url;
       blocks.push({
         type: "image",
-        url: block.data.url,
+        url: url,
         caption: block.data.caption
       });
     } else if (block.type === "simpleImage") {
@@ -123,7 +124,7 @@ const parseImage = line => {
   }
 };
 const parseListItem = line => {
-  const listItemMatch = line.match(/-\s(.+)|\d\.\s(.+)/);
+  const listItemMatch = line.match(/-\s(.+)|\d\\s(.+)/);
   if (listItemMatch) {
     return listItemMatch[1] || listItemMatch[2];
   }
@@ -136,26 +137,30 @@ function containsInvalidTag(str) {
   const invalidTagRegex = /<[^ >]+[^>]*$/;
   return invalidTagRegex.test(str);
 }
+const convertMdtoHtml = line => {
+  // Replace bold markdown with HTML <b> tags
+  line = line.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  line = line.replace(/__(.*?)__/g, '<b>$1</b>');
+
+  // Replace italic markdown with HTML <i> tags
+  // Updated regex pattern for italics, accounting for edge cases and ignoring underscores in words/identifiers
+  const italicRegex = /(?<!\w)(?<!\\)_([^\s_](?:.*?[^\s_])?)(?<!\\)_(?!\w)/g;
+  line = line.replace(italicRegex, function (match, content) {
+    // The "content" captured group contains the text to be italicized
+    return `<i>${content}</i>`;
+  });
+
+  // Replace markdown links with HTML <a> tags
+  line = line.replace(/\[([^\]]+)]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  return line;
+};
 const parseParagraph = line => {
   if (containsInvalidTag(line)) {
     return null;
   }
   line = line.trim();
   if (line.length > 0) {
-
-    // Replace bold markdown with HTML <b> tags
-    line = line.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-    line = line.replace(/__(.*?)__/g, '<b>$1</b>');
-
-    // Replace italic markdown with HTML <i> tags
-    // Updated regex pattern for italics, accounting for edge cases and ignoring underscores in words/identifiers
-    const italicRegex = /(?<!\w)(?<!\\)_([^\s_](?:.*?[^\s_])?)(?<!\\)_(?!\w)/g;
-    line = line.replace(italicRegex, function (match, content) {
-      return `<i>${content}</i>`;
-    });
-
-    // Replace markdown links with HTML <a> tags
-    line = line.replace(/\[([^\]]+)]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+    line = convertMdtoHtml(line);
     return {
       type: "paragraph",
       text: line
@@ -211,6 +216,18 @@ const parseNotFaq = mdContent => {
       i = codeBlockResult.newIndex - 1; // Update the index to after the code block, -1 since the loop will increment
       continue;
     }
+
+    // Check for listItem and **listBlock** before header, otherwise header could be appended before list items, which is out of order
+    const listItem = parseListItem(line);
+    if (listItem) {
+      listItems.push(convertMdtoHtml(listItem));
+      continue;
+    }
+    const listBlock = processListItems(listItems);
+    if (listBlock) {
+      blocks.push(listBlock);
+      listItems = [];
+    }
     if (block = parseHeader(line)) {
       blocks.push(block);
       continue;
@@ -221,16 +238,6 @@ const parseNotFaq = mdContent => {
     }
     if (line[0] === ">") {
       continue;
-    }
-    const listItem = parseListItem(line);
-    if (listItem) {
-      listItems.push(listItem);
-      continue;
-    }
-    const listBlock = processListItems(listItems);
-    if (listBlock) {
-      blocks.push(listBlock);
-      listItems = [];
     }
     if (block = parseParagraph(line)) {
       blocks.push(block);

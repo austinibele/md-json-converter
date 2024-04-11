@@ -9,9 +9,10 @@ const convertFromJSON = (jsonData) => {
                 level: block.data.level
             });
         } else if (block.type === "image") {
+            let url = block.data.url? block.data.url : block.data.file.url;
             blocks.push({
                 type: "image",
-                url: block.data.url,
+                url: url,
                 caption: block.data.caption
             });
         } else if (block.type === "simpleImage") {
