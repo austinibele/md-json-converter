@@ -114,7 +114,6 @@ const parseCodeBlock = (lines, currentIndex) => {
 };
 
 const parseNotFaq = (mdContent) => {
-    console.log('parseNotFaq content', mdContent)
     const blocks = [];
     let listItems = [];
     const lines = mdContent.split("\n");
