@@ -27,6 +27,17 @@ const parseListItem = (line) => {
     }
 };
 
+const parseWarning = (line) => {
+    const warningMatch = line.match(/\|WARNING title=(.+)\s+message=(.+)\s+WARNING\|/);
+    if (warningMatch) {
+        return {
+            type: "warning",
+            title: warningMatch[1],
+            message: warningMatch[2]
+        };
+    }
+};
+
 
 function containsInvalidTag(str) {
     // This regex looks for a string that starts with < and is followed by any character
@@ -103,6 +114,7 @@ const parseCodeBlock = (lines, currentIndex) => {
 };
 
 const parseNotFaq = (mdContent) => {
+    console.log('parseNotFaq content', mdContent)
     const blocks = [];
     let listItems = [];
     const lines = mdContent.split("\n");
@@ -139,6 +151,19 @@ const parseNotFaq = (mdContent) => {
         }
 
         if (block = parseImage(line)) {
+            blocks.push(block);
+            continue;
+        }
+
+        if (block = parseWarning(line)) {
+            console.log("*******")
+            console.log("*******")
+            console.log("*******")
+            console.log("*******")
+            console.log("*******")
+            console.log("*******")
+            console.log("*******")
+            console.log("*******")
             blocks.push(block);
             continue;
         }

@@ -31,6 +31,8 @@ const blocksToMarkdown = (blocks) => {
             mdContent += '\n';
         } else if (block.type === "code") {
             mdContent += "```\n" + block.code + "\n```\n\n";
+        } else if (block.type === "warning") {
+            mdContent += `|WARNING title=${block.title} message=${block.message} WARNING|\n\n`;
         }
     }
 

@@ -25,6 +25,9 @@ bin/build.sh &&
 python3.9 -m src.app
 ```
 
+This is a warning:
+|WARNING title=Note: message=Avoid using this method just for lulz. It can be very dangerous opposite your daily fun stuff. WARNING|
+
 ## Frequently Asked Questions
 <question>What is the first question</question>
 

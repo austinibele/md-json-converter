@@ -15,7 +15,7 @@ const markdownContent = fs.readFileSync(new URL('../test/markdown_text.md', impo
 // Test converter on markdown text
 const result = md2cleanjson(markdownContent);
 // Log the output for visual inspection
-console.log(JSON.stringify(result, null, 2));
+console.log(result);
 
 /////// Test json2md
 markdown = json2md(data);

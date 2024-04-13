@@ -36,6 +36,12 @@ const convertFromJSON = (jsonData) => {
                 type: "code",
                 code: block.data.code
             });
+        } else if (block.type === "warning") {
+            blocks.push({
+                type: "warning",
+                title: block.data.title,
+                message: block.data.message
+            });
         }
     }
 

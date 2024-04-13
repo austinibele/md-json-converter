@@ -58,6 +58,15 @@ const convertToJSON = (blocks) => {
                     code: block.code
                 }
             })
+        } else if (block.type === "warning") {
+            data.blocks.push({
+                id: generateBlockId(),
+                type: "warning",
+                data: {
+                    title: block.title,
+                    message: block.message
+                }
+            });
         }
     }
 
